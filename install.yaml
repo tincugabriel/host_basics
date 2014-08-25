@@ -1,0 +1,32 @@
+---
+- hosts: master
+  vars:
+    intellij_link: http://download-cf.jetbrains.com/idea/ideaIC-13.1.4b.tar.gz
+    intellij_folder_name: idea-IC-13
+    intellij_archive_name: idea-IC-13.tar.gz
+    tools_folder: /home/gabriel/tools
+  sudo: yes
+  tasks:
+  - name: install openjdk 7, git , curl, maven, scala, setuptools and whatever else i can cram in here
+    apt: name={{item}} state=present
+    with_items:
+    - openjdk-7-jdk
+    - golang-go-linux-amd64
+    - git
+    - curl
+    - maven
+    - scala
+    - python-setuptools
+  - name: install pip and virtualenv
+    command: easy_install {{item}}
+    with_items:
+    - pip
+    - virtualenv
+  - name: create tools folder
+    file: state=directory path={{tools_folder}}
+  - name: download intellij
+    get_url: url={{intellij_link}} dest={{tools_folder}}/{{intellij_archive_name}}
+  - name: unzip intellij archive
+    unarchive: copy=no src={{tools_folder}}/{{intellij_archive_name}} dest={{tools_folder}}
+    
+  
